@@ -6,7 +6,7 @@ module.exports = {
         host: 'localhost',
         user: 'root', // Substitua pelo seu usuário
         password: 'bcd127', // Substitua pela sua senha
-        database: 'db_fixacao_fime_projeto', // Substitua pelo nome do seu banco de dados
+        database: 'db_fixacao_filme_projeto', // Substitua pelo nome do seu banco de dados
         port: 3306, // Porta padrão do MySQL
        
         // Opcional: Define charset (recomendado para UTF8)

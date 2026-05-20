@@ -1,6 +1,6 @@
-create database db_fixacao_fime_projeto;
+create database db_fixacao_filme_projeto;
 
-use db_fixacao_fime_projeto;
+use db_fixacao_filme_projeto;
 
 show tables;
 
@@ -62,3 +62,27 @@ create table tbl_produtora (
     descricao		varchar(100),
     logo_url		varchar(255)
 );
+
+create table tbl_filme (
+	id 					int not null primary key auto_increment,
+    nome 				varchar(80) not null,
+    data_lancamento 	date not null,
+	duracao				time not null,
+    sinopse				varchar(100) not null,
+    avaliacao			decimal(4,2),
+    valor				decimal(5,2) not null,
+    capa				varchar(255),
+    id_produtora		int,
+    id_classificacao 	int,
+    
+    constraint fk_produtora_filme
+    foreign key (id_produtora)
+    references tbl_produtora(id),
+    
+    constraint fk_classificacao_filme
+    foreign key (id_classificacao)
+    references tbl_classificacao(id)
+);
+
+alter table tbl_filme
+modify column sinopse varchar(255) not null;
