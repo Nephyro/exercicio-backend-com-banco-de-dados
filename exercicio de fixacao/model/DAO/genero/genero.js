@@ -1,7 +1,7 @@
 /******************************************************************************
  * Objetivo: Arquivo responsável pelo CRUD no Banco de dados MySQL na tabela
- *           classificacao
- * Data: 15/05/2026
+ *           Genero
+ * Data: 22/05/2026
  * Autor: Anderson Ribeiro
  * Versão: 1.0
  ******************************************************************************/
@@ -15,19 +15,19 @@ const knexConfig = require('../../database_config_knex/knexFile.js')
 //Criar a conexão com o BD Mysql
 const knexConex = knex(knexConfig.development)
 
-//Função para inserir dados na tabela de classificacao
-const insertClassificacao = async function(classificacao){
+//Função para inserir dados na tabela de genero
+const insertGenero = async function(genero){
     try {
 
-        let sql = `insert into tbl_classificacao (
-                            nome, 
-                            sigla, 
-                            descricao
+        let sql = `insert into tbl_genero (
+                            nome,
+                            descricao,
+                            sigla,
                             )
                     values (
-                            '${classificacao.nome}', 
-                            '${classificacao.sigla}', 
-                            '${classificacao.descricao}'
+                            '${genero.nome}', 
+                            '${genero.descricao}', 
+                            '${genero.sigla}'
                             );`
 
         //Executar o ScriptSQL no banco de dados                        
@@ -45,16 +45,15 @@ const insertClassificacao = async function(classificacao){
     }
 }
 
-//Função para atualizar um classificacao existente na tabela
-const updateClassificacao = async function(classificacao){
+//Função para atualizar um genero existente na tabela
+const updateGenero = async function(genero){
     try {
         //Script para atualizar os dados no BD
-        let sql = `update tbl_classificacao set 
-                        nome            = '${classificacao.nome}',
-                        sigla           = '${classificacao.sigla}',
-                        descricao       = '${classificacao.descricao}'
-                       
-                    where id = ${classificacao.id}`
+        let sql = `update tbl_genero set 
+                        nome                = '${genero.nome}',
+                        descricao           = '${genero.descricao}',
+                        sigla               = '${genero.sigla}'	
+                    where id = ${genero.id}`
 
         //Executa o script SQL no BD
         let result = await knexConex.raw(sql)
@@ -68,13 +67,13 @@ const updateClassificacao = async function(classificacao){
     }
 }
 
-//Função para retornar todos os dados da tabela de classificacao
-const selectAllClassificacao = async function(){
+//Função para retornar todos os dados da tabela de genero
+const selectAllGenero = async function(){
     try {
-        //Script para retornar todos os classificacaos
-        let sql = `select * from tbl_classificacao order by id desc`
+        //Script para retornar todos os generos
+        let sql = `select * from tbl_genero order by id desc`
 
-        //Executa no banco de dados o script SQL para retornar os classificacaos
+        //Executa no banco de dados o script SQL para retornar os generos
         let result = await knexConex.raw(sql)
         
         //Validação para verificar se o retorno no BD é um Array
@@ -91,10 +90,10 @@ const selectAllClassificacao = async function(){
 }
 
 
-//Função para retornar os dados do classificacao filtrando pelo ID
-const selectByIdClassificacao = async function(id){
+//Função para retornar os dados do genero filtrando pelo ID
+const selectByIdGenero = async function(id){
     try {
-        let sql = `select * from tbl_classificacao where id=${id}`
+        let sql = `select * from tbl_genero where id=${id}`
 
         let result = await knexConex.raw(sql)
 
@@ -108,10 +107,10 @@ const selectByIdClassificacao = async function(id){
     }
 }
 
-//Função para excluir um classificacao pelo ID
-const deleteClassificacao = async function(id){
+//Função para excluir um genero pelo ID
+const deleteGenero = async function(id){
     try {
-        let sql = `delete from tbl_classificacao where id=${id}`
+        let sql = `delete from tbl_genero where id=${id}`
 
         let result = await knexConex.raw(sql)
 
@@ -125,9 +124,9 @@ const deleteClassificacao = async function(id){
 }
 
 module.exports = {
-    insertClassificacao,
-    updateClassificacao,
-    selectAllClassificacao,
-    selectByIdClassificacao,
-    deleteClassificacao
+    insertGenero,
+    updateGenero,
+    selectAllGenero,
+    selectByIdGenero,
+    deleteGenero
 }
