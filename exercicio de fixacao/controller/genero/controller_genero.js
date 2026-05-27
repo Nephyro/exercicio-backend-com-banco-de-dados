@@ -18,7 +18,7 @@ const inserirNovoGenero = async function(genero, contentType){
     let message = JSON.parse(JSON.stringify(config_message))
     
     try {
-        if(String(contentType).toUpperCase() == 'APPLICATION/JSON'){
+        if(String(contentType).toUpperCase().includes('APPLICATION/JSON')){
 
             // Validação de dados para os atributos do gênero (Status 400)
             let validar = await validarDados(genero)
@@ -54,7 +54,7 @@ const atualizarGenero = async function(genero, id, contentType) {
     let message = JSON.parse(JSON.stringify(config_message))
 
     try {
-        if(String(contentType).toUpperCase() == 'APPLICATION/JSON'){
+        if(String(contentType).toUpperCase().includes('APPLICATION/JSON')){
             
             // Valida se o ID existe
             let resultBuscarID = await buscarGenero(id)

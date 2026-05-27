@@ -15,6 +15,7 @@ const filmeDAO = require('../../model/DAO/filme/filme.js')
 //Import de arquivos de Controller
 const controller_classificacao = require('../classificacao/controller_classificacao.js')
 const controller_filme_genero  = require('./controller_filme_genero.js')
+const { log } = require('node:console')
 
 //Função para inserir um novo Filme
 const inserirNovoFilme = async function(filme, contentType){
@@ -26,7 +27,7 @@ const inserirNovoFilme = async function(filme, contentType){
     try {
    
         //Validação para o tipo de dados da requisição (somente JSON)
-        if(String(contentType).toUpperCase() == 'APPLICATION/JSON'){
+        if(String(contentType).toUpperCase().includes('APPLICATION/JSON')){
 
             //Validação de dados para os atributos do Filme (Status 400)
             let validar = await validarDados(filme)
@@ -84,7 +85,7 @@ const atualizarFilme = async function(filme, id, contentType)
 
     try {
         //Validação do Contenty type para receber apenas JSON
-        if(String(contentType).toUpperCase() == 'APPLICATION/JSON'){
+        if(String(contentType).toUpperCase().includes ('APPLICATION/JSON')){
             //Validação para o ID incorreto
             let resultBuscarID = await buscarFilme(id)
 
@@ -103,6 +104,27 @@ const atualizarFilme = async function(filme, id, contentType)
                     let result = await filmeDAO.updateFilme(filme)
 
                     if(result){
+                        // Manipulação de dados na tabela de relação entre filme e genero
+                        let resultDeleteGenero = await controller_filme_genero.excluirGenerosIdFilme(filme.id)
+
+                        // Após a exclusão de todos os generos relacionados com o filme
+                        if(resultDeleteGenero.status){
+                          //Manipulação de dados para inserir os Generos do Filme
+                            for(genero of filme.genero){
+                                //Cria o objeto JSON com os ids do filme e do genero
+                                let filmeGenero = { "id_filme": filme.id, 
+                                                    "id_genero": genero.id
+                                                }
+                                //Chama a controller do filme genero para inserir os IDs                
+                                let resultInsertGenero = await controller_filme_genero.inserirNovoFilmeGenero(filmeGenero)
+                                console.log(resultInsertGenero)
+
+                                if(!resultInsertGenero.status){
+                                    return message.SUCCESS_CREATED_ITEM_WARNIG //201 com alerta de dados não inseridos
+                                }  
+                            }
+                        }
+
                         message.DEFAULT_MESSAGE.status      = message.SUCCESS_UPDATED_ITEM.status
                         message.DEFAULT_MESSAGE.status_code = message.SUCCESS_UPDATED_ITEM.status_code
                         message.DEFAULT_MESSAGE.message     = message.SUCCESS_UPDATED_ITEM.message
@@ -143,6 +165,8 @@ const listarFilme = async function(){
 
         //Validação para verificar se o DAO conseguiu processar os dados
         if(result){
+            console.log(result);
+            
             //Validação para verificar se existe conteúdo no array
             if(result.length > 0){
 
@@ -179,6 +203,8 @@ const listarFilme = async function(){
             return message.ERROR_INTERNAL_SERVER_MODEL //500 (model)
         }
     } catch (error) {
+        console.log(error);
+        
         return message.ERROR_INTERNAL_SERVER_CONTROLLER //500 (controller)
     }
 }
@@ -285,7 +311,7 @@ const validarDados = async function(filme){
     }else if(filme.sinopse == undefined || filme.sinopse == '' || filme.sinopse == null){
         message.ERROR_BAD_REQUEST.field = '[SINOPSE] INVÁLIDO'
         return message.ERROR_BAD_REQUEST //400
-    }else if(isNaN(filme.avaliacao) || filme.avaliacao.length > 3){
+    }else if(isNaN(filme.avaliacao) || String(filme.avaliacao).length > 3){
         message.ERROR_BAD_REQUEST.field = '[AVALIAÇÃO] INVÁLIDO'
         return message.ERROR_BAD_REQUEST //400
     }else if(filme.valor == undefined || filme.valor == '' || filme.valor == null ||  filme.valor.split('.')[0].length > 3 || isNaN(filme.valor)){

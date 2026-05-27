@@ -10,7 +10,7 @@
 const knex = require('knex')
 
 //Import do arquivo de configuração para conexão com o BD Mysql
-const knexConfig = require('../../database_config_knex/knexFile.js')
+const knexConfig = require('../../../database_config_knex/knexFile.js')
 
 //Criar a conexão com o BD Mysql
 const knexConex = knex(knexConfig.development)
@@ -27,7 +27,6 @@ const insertFilme = async function(filme){
                             avaliacao, 
                             valor, 
                             capa,
-                            id_produtora,
                             id_classificacao
                             )
                     values (
@@ -38,7 +37,6 @@ const insertFilme = async function(filme){
                             if('${filme.avaliacao}' = '', null, '${filme.avaliacao}'),
                             '${filme.valor}',
                             '${filme.capa}',
-                             ${filme.id_produtora},
                              ${filme.id_classificacao}
                             );`
 
@@ -69,7 +67,6 @@ const updateFilme = async function(filme){
                         avaliacao           = if('${filme.avaliacao}' = '', null, '${filme.avaliacao}'),
                         valor               = '${filme.valor}',
                         capa                = '${filme.capa}',
-                        id_produtora        = ${filme.id_produtora},
                         id_classificacao    = ${filme.id_classificacao}	
                     where id = ${filme.id}`
 

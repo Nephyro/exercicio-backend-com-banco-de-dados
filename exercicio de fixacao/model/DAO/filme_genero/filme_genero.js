@@ -10,7 +10,7 @@
 const knex = require('knex')
 
 //Import do arquivo de configuração para conexão com o BD Mysql
-const knexConfig = require('../../database_config_knex/knexFile.js')
+const knexConfig = require('../../../database_config_knex/knexFile.js')
 
 //Criar a conexão com o BD Mysql
 const knexConex = knex(knexConfig.development)
@@ -130,7 +130,7 @@ const selectFilmesByIdGenero = async function(idGenero){
 const selectGenerosByIdFilme = async function(idFilme){
     try {
         let sql = `select tbl_genero.*
-                    from tbl_genero
+                    from tbl_filme
                         inner join tbl_filme_genero
                             on tbl_filme.id = tbl_filme_genero.id_filme
                         inner join tbl_genero
@@ -145,6 +145,7 @@ const selectGenerosByIdFilme = async function(idFilme){
             return false
         }
     } catch (error) {
+        console.log(error)
         return false
     }
 }
@@ -165,6 +166,24 @@ const deleteFilmeGenero = async function(id){
     }
 }
 
+// Função para excluir os generos filtrando peli ID do filme
+// Esssa função será utilizada no Update do filme, pois precisa apagar todos os generos
+// relacionados com o fitro para inserir as novas relações
+const deleteGenerosByIdFilme = async function(idFilme){
+    try {
+        let sql = `delete from tbl_filme_genero where id_filme=${idFilme}`
+
+        let result = await knexConex.raw(sql)
+
+        if(result)
+            return true
+        else
+            return false
+    } catch (error) {
+        return false
+    }
+}
+
 module.exports = {
     insertFilmeGenero,
     updateFilmeGenero,
@@ -172,5 +191,6 @@ module.exports = {
     selectByIdFilmeGenero,
     selectFilmesByIdGenero,
     selectGenerosByIdFilme,
-    deleteFilmeGenero
+    deleteFilmeGenero,
+    deleteGenerosByIdFilme
 }

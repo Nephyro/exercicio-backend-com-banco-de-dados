@@ -22,7 +22,7 @@ const inserirNovoClassificacao = async function(classificacao, contentType){
     try {
    
         //Validação para o tipo de dados da requisição (somente JSON)
-        if(String(contentType).toUpperCase() == 'APPLICATION/JSON'){
+        if(String(contentType).toUpperCase().includes('APPLICATION/JSON')){
 
             //Validação de dados para os atributos do classificacao (Status 400)
             let validar = await validarDados(classificacao)

@@ -10,7 +10,7 @@
 const config_message = require('../modulo/configMessages.js')
 
 // Import do arquivo DAO para fazer o CRUD do gênero no banco de dados
-const filmeGeneroDAO = require('../../model/DAO/flme_genero/filme_genero.js')
+const filmeGeneroDAO = require('../../model/DAO/filme_genero/filme_genero.js')
 
 // Função para inserir um novo gênero
 const inserirNovoFilmeGenero = async function(filmeGenero){
@@ -57,7 +57,7 @@ const atualizarFilmeGenero = async function(filmeGenero, id) {
                 let validar = await validarDados(filmeGenero)
 
                 if(!validar){
-                    genero.id = id
+                    filmeGenero.id = id
 
                     let result = await filmeGeneroDAO.updateFilmeGenero(filmeGenero)
 
@@ -162,7 +162,7 @@ const buscarFilmeIdGenero = async function(idGenero){
 
                     message.DEFAULT_MESSAGE.status = message.SUCCESS_RESPONSE.status
                     message.DEFAULT_MESSAGE.status_code = message.SUCCESS_RESPONSE.status_code
-                    message.DEFAULT_MESSAGE.response.filme_genero = result[0] // Retorna o objeto direto se preferir
+                    message.DEFAULT_MESSAGE.response.filme_genero = result // Retorna o objeto direto se preferir
 
                     return message.DEFAULT_MESSAGE // 200
                 } else {
@@ -193,7 +193,7 @@ const buscarGeneroIdFilme = async function(idFilme){
 
                     message.DEFAULT_MESSAGE.status = message.SUCCESS_RESPONSE.status
                     message.DEFAULT_MESSAGE.status_code = message.SUCCESS_RESPONSE.status_code
-                    message.DEFAULT_MESSAGE.response.filme_genero = result[0] // Retorna o objeto direto se preferir
+                    message.DEFAULT_MESSAGE.response.filme_genero = result // Retorna o objeto direto se preferir
 
                     return message.DEFAULT_MESSAGE // 200
                 } else {
@@ -232,6 +232,24 @@ const excluirFilmeGenero = async function(id){
     }
 }
 
+// Função para excluir os gêneros relacionados com o filme
+const excluirGenerosIdFilme = async function(idFilme){
+
+    let message = JSON.parse(JSON.stringify(config_message))
+    
+    try {
+            let result = await filmeGeneroDAO.deleteGenerosByIdFilme(idFilme)
+
+            if(result){
+                return message.SUCCESS_DELETED_ITEM // 200
+            } else {
+                return message.ERROR_INTERNAL_SERVER_MODEL // 500
+            }
+    } catch (error) {
+        return message.ERROR_INTERNAL_SERVER_CONTROLLER // 500
+    }
+}
+
 const validarDados = async function(filmeGenero){
 
     let message = JSON.parse(JSON.stringify(config_message))
@@ -256,5 +274,6 @@ module.exports = {
     buscarFilmeIdGenero,
     buscarGeneroIdFilme,
     atualizarFilmeGenero,
-    excluirFilmeGenero
+    excluirFilmeGenero,
+    excluirGenerosIdFilme
 }
