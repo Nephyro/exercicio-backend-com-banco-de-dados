@@ -7,7 +7,7 @@
  ********************************************************************************/
 
 // Padronização de cabeçalho para retorno dos endpoint da API
-const DEFUALT_MESSAGE = {
+const DEFAULT_MESSAGE = {
     api_description: 'API para gerenciar controle de Filmes',
     development: 'Anderson Ribeiro Soares',
     version: '1.0.5.26',
@@ -40,7 +40,7 @@ const SUCCESS_UPDATED_ITEM =    {status : true, status_code: 200, message: 'Regi
 const SUCCESS_DELETED_ITEM =    {status : true, status_code: 200, message: 'Registro excluido com sucesso!'}
 
 module.exports = {
-    DEFUALT_MESSAGE,
+    DEFAULT_MESSAGE,
     ERROR_BAD_REQUEST,
     SUCCESS_CREATED_ITEM,
     ERROR_INTERNAL_SERVER_MODEL,
